@@ -104,12 +104,26 @@ export const SimulateTab: React.FC = () => {
   const [buildingDensity, setBuildingDensity] = useState(baseline?.satellite.building_density ?? 50);
 
   useEffect(() => {
-    if (baseline) {
-      setNdvi(baseline.satellite.ndvi);
-      setTemperature(baseline.weather.temperature);
-      setBuildingDensity(baseline.satellite.building_density);
-    }
-  }, [baseline]);
+    if (!baseline) return;
+
+    setNdvi(prev =>
+      prev === baseline.satellite.ndvi
+        ? prev
+        : baseline.satellite.ndvi
+    );
+
+    setTemperature(prev =>
+      prev === baseline.weather.temperature
+        ? prev
+        : baseline.weather.temperature
+    );
+
+    setBuildingDensity(prev =>
+      prev === baseline.satellite.building_density
+        ? prev
+        : baseline.satellite.building_density
+    );
+  }, [baseline?.timestamp]);
 
   const handleSimulate = async () => {
     if (!selectedLocation || !baseline) return;
