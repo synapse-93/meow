@@ -26,6 +26,7 @@ CORS(
             "origins": [
                 "http://localhost:5173",
                 "https://meow-production-9b74.up.railway.app"
+                "https://pretty-youthfulness-production-392d.up.railway.app",
             ]
         }
     }
