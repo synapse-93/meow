@@ -19,13 +19,13 @@ function AQIGauge({ aqi }: { aqi: number }) {
 
   const normalizedAqi = safeAqi;
 
-  const angle = -135 + (safeAqi / 500) * 270;
+  const angle = -45 + (safeAqi / 500) * 270;
 
   const color = getAqiColor(normalizedAqi);
   const glow = getAqiGlow(normalizedAqi);
 
   const cx = 110;
-  const cy = 105;
+  const cy = 115;
 
   const startAngle = -135;
   const endAngle = 135;
@@ -72,7 +72,7 @@ function AQIGauge({ aqi }: { aqi: number }) {
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg width={220} height={160} viewBox="0 0 220 160">
+      <svg width={240} height={180} viewBox="0 0 220 180">
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#22c55e" />
