@@ -125,7 +125,7 @@ export const InsightsTab: React.FC = () => {
     {
       label: 'Building Density',
       value: s.building_density.toFixed(1),
-      unit: '%',
+      unit: '/km²',
       icon: <Building2 size={18} />,
       color: '#818cf8',
       status: getBuildingStatus(s.building_density),
