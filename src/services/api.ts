@@ -11,7 +11,10 @@ const api = axios.create({
 });
 
 function getBaseUrl() {
-  return getBackendUrl();
+  return (
+    import.meta.env.VITE_BACKEND_URL ||
+    'https://meow-production-9b74.up.railway.app'
+  );
 }
 
 export interface PredictRequest {
