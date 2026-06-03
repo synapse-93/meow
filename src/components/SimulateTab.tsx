@@ -121,6 +121,7 @@ export const SimulateTab: React.FC = () => {
       const result = await runSimulation({
         latitude: selectedLocation.lat,
         longitude: selectedLocation.lng,
+
         date: formatDate(new Date(baseline.timestamp || Date.now())),
         time: formatTime(new Date(baseline.timestamp || Date.now())),
 
@@ -128,10 +129,8 @@ export const SimulateTab: React.FC = () => {
         temperature_override: temperature,
 
         building_density_override:
-          baseline?.satellite.building_density
-            ? baseline.satellite.building_density *
-              (buildingDensity / 50)
-            : buildingDensity,
+          (buildingDensity / 50) *
+          baseline.satellite.building_density,
       });
       setSimulationResult(result);
     } catch (err: any) {
@@ -185,7 +184,7 @@ export const SimulateTab: React.FC = () => {
 
   const ndviDelta = ndvi - (baseline?.satellite.ndvi ?? ndvi);
   const tempDelta = temperature - (baseline?.weather.temperature ?? temperature);
-  const buildingDelta = buildingDensity - (baseline?.satellite.building_density ?? buildingDensity);
+  const buildingDelta = buildingDensity - 50;
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
@@ -258,7 +257,9 @@ export const SimulateTab: React.FC = () => {
             onChange={setBuildingDensity}
           />
           <div className="flex items-center justify-between px-2">
-            <span className="text-[10px] text-slate-600">vs Baseline: {baseline.satellite.building_density.toFixed(1)}%</span>
+            <span className="text-[10px] text-slate-600">
+              vs Baseline (50%)
+            </span>
             <DeltaBadge delta={buildingDelta} unit="%" />
           </div>
         </div>
