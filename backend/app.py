@@ -21,17 +21,9 @@ app = Flask(__name__)
 
 CORS(
     app,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "http://localhost:5173",
-                "https://meow-production-9b74.up.railway.app"
-                "https://pretty-youthfulness-production-392d.up.railway.app",
-            ]
-        }
-    }
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=True
 )
-
 # Register routes
 from routes.predict import predict_bp
 from routes.forecast import forecast_bp
