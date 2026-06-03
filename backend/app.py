@@ -19,12 +19,17 @@ if PREDICT_DIR not in sys.path:
 
 app = Flask(__name__)
 
-CORS(app, origins=[
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:4173',
-    '*',
-], supports_credentials=False)
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:5173",
+                "https://meow-production-9b74.up.railway.app"
+            ]
+        }
+    }
+)
 
 # Register routes
 from routes.predict import predict_bp
