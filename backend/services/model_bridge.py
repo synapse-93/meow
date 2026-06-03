@@ -285,12 +285,15 @@ def run_prediction(lat, lng, date_str, time_str):
     _load_model()
 
     try:
+        # FORCE CORRECT PARAMETER ORDER
         raw = _predict_fn(
-            lat=lat,
-            lon=lng,
-            date_str=date_str,
-            time_str=time_str
+            None,       # place_name
+            lat,        # lat
+            lng,        # lon
+            date_str,   # date
+            time_str    # time
         )
+
         print("\n========== RAW MODEL OUTPUT ==========")
         print(type(raw))
         print(raw)
@@ -298,7 +301,8 @@ def run_prediction(lat, lng, date_str, time_str):
         if hasattr(raw, '__dict__'):
             print(raw.__dict__)
 
-        print("======================================\n")
+        print("=====================================\n")
+
     except Exception as e:
         raise RuntimeError(
             f"Prediction failed: {str(e)}\n{traceback.format_exc()}"
@@ -312,28 +316,51 @@ def run_prediction(lat, lng, date_str, time_str):
         time_str
     )
 
-
 def run_prediction_with_overrides(lat, lng, date_str, time_str, overrides: dict):
-    """Call predict_final.py with parameter overrides for simulation."""
+    """Call predict_final.py with parameter overrides."""
     _load_model()
 
-    # Try calling with overrides if the function supports them
     try:
-        raw = _predict_fn(lat, lng, date_str, time_str, **overrides)
+        raw = _predict_fn(
+            None,       # place_name
+            lat,
+            lng,
+            date_str,
+            time_str,
+            **overrides
+        )
+
     except TypeError:
-        try:
-            all_params = {'latitude': lat, 'longitude': lng, 'date': date_str, 'time': time_str}
-            all_params.update(overrides)
-            raw = _predict_fn(**all_params)
-        except TypeError:
-            # If function doesn't support overrides, run normally and adjust output
-            raw = _predict_fn(lat, lng, date_str, time_str)
-            result = _normalize_response(raw, lat, lng, date_str, time_str)
-            result = _apply_overrides_to_result(result, overrides)
-            return result
+        raw = _predict_fn(
+            None,
+            lat,
+            lng,
+            date_str,
+            time_str
+        )
 
-    return _normalize_response(raw, lat, lng, date_str, time_str)
+        result = _normalize_response(
+            raw,
+            lat,
+            lng,
+            date_str,
+            time_str
+        )
 
+        result = _apply_overrides_to_result(
+            result,
+            overrides
+        )
+
+        return result
+
+    return _normalize_response(
+        raw,
+        lat,
+        lng,
+        date_str,
+        time_str
+    )
 
 def _apply_overrides_to_result(result: dict, overrides: dict) -> dict:
     """
