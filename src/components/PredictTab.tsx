@@ -50,13 +50,11 @@ const aqiColor =
       />
 
       {/* title */}
-      <div className="absolute top-5 left-5 text-slate-500 text-sm font-semibold tracking-[0.2em] uppercase">
-        AQI Index
-      </div>
+    
 
       {/* AQI Number */}
       <div
-        className="text-7xl font-extrabold z-10"
+        className="text-6xl font-extrabold z-10"
         style={{ color: aqiColor }}
       >
         {safeAqi}
@@ -64,7 +62,7 @@ const aqiColor =
 
       {/* AQI Label */}
       <div
-        className="text-2xl font-semibold mt-2 z-10"
+        className="text-xl font-semibold mt-2 z-10"
         style={{ color: aqiColor }}
       >
         {aqiLabel}
@@ -268,43 +266,9 @@ export const PredictTab: React.FC = () => {
               color="#06b6d4"
               sub={`Wind ${p.weather.wind_speed.toFixed(1)} m/s at ${p.weather.wind_direction.toFixed(0)}° · Rainfall ${p.weather.rainfall.toFixed(1)} mm`}
             />
-          </div>
+          
 
-          {/* Second row */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* Carbon donut */}
-            <div className="glass-card rounded-[18px] p-4 border border-slate-800/30">
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-3">Carbon Contributors</p>
-              <ResponsiveContainer width="100%" height={180}>
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {donutData.map((_, i) => (
-                      <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: '#0d1526', border: '1px solid #1e3a5f', borderRadius: 10, fontSize: 11 }}
-                    formatter={(v: any) => [`${Number(v).toFixed(1)}%`, '']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="grid grid-cols-2 gap-1 mt-1">
-                {donutData.map((d, i) => (
-                  <div key={i} className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ background: DONUT_COLORS[i] }} />
-                    <span className="text-[10px] text-slate-500">{d.name}: <span className="text-slate-300">{d.value.toFixed(1)}%</span></span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          
 
             {/* Confidence + temporal */}
             <div className="flex flex-col gap-3">
@@ -369,7 +333,7 @@ export const PredictTab: React.FC = () => {
               </div>
             </div>
           </div>
-
+        
           {/* Recommendations */}
           {p.recommendations && p.recommendations.length > 0 && (
             <div className="glass-card rounded-[18px] p-4 border border-slate-800/30">
