@@ -101,28 +101,16 @@ export const SimulateTab: React.FC = () => {
 
   const [ndvi, setNdvi] = useState(baseline?.satellite.ndvi ?? 0.3);
   const [temperature, setTemperature] = useState(baseline?.weather.temperature ?? 28);
-  const [buildingDensity, setBuildingDensity] = useState(baseline?.satellite.building_density ?? 50);
+  const [buildingDensity, setBuildingDensity] = useState(50);
 
   useEffect(() => {
     if (!baseline) return;
 
-    setNdvi(prev =>
-      prev === baseline.satellite.ndvi
-        ? prev
-        : baseline.satellite.ndvi
-    );
+    setNdvi(baseline.satellite.ndvi);
+    setTemperature(baseline.weather.temperature);
 
-    setTemperature(prev =>
-      prev === baseline.weather.temperature
-        ? prev
-        : baseline.weather.temperature
-    );
-
-    setBuildingDensity(prev =>
-      prev === baseline.satellite.building_density
-        ? prev
-        : baseline.satellite.building_density
-    );
+    // middle = predicted baseline
+    setBuildingDensity(50);
   }, [baseline?.timestamp]);
 
   const handleSimulate = async () => {
@@ -135,9 +123,15 @@ export const SimulateTab: React.FC = () => {
         longitude: selectedLocation.lng,
         date: formatDate(new Date(baseline.timestamp || Date.now())),
         time: formatTime(new Date(baseline.timestamp || Date.now())),
+
         ndvi_override: ndvi,
         temperature_override: temperature,
-        building_density_override: buildingDensity,
+
+        building_density_override:
+          baseline?.satellite.building_density
+            ? baseline.satellite.building_density *
+              (buildingDensity / 50)
+            : buildingDensity,
       });
       setSimulationResult(result);
     } catch (err: any) {
@@ -151,7 +145,10 @@ export const SimulateTab: React.FC = () => {
     if (baseline) {
       setNdvi(baseline.satellite.ndvi);
       setTemperature(baseline.weather.temperature);
-      setBuildingDensity(baseline.satellite.building_density);
+
+      // middle = predicted baseline
+      setBuildingDensity(50);
+
       setSimulationResult(null);
     }
   };
