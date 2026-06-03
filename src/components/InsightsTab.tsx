@@ -221,59 +221,7 @@ export const InsightsTab: React.FC = () => {
         ))}
       </div>
 
-      {/* Charts row */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Radar chart */}
-        <div className="glass-card rounded-[18px] p-4 border border-slate-800/30">
-          <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1">Environmental Radar</p>
-          <p className="text-xs text-slate-600 mb-3">Normalized multi-dimensional environmental fingerprint</p>
-          <ResponsiveContainer width="100%" height={260}>
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#1e3a5f44" />
-              <PolarAngleAxis
-                dataKey="metric"
-                tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }}
-              />
-              <Radar
-                name="Current"
-                dataKey="value"
-                stroke="#06b6d4"
-                fill="#06b6d4"
-                fillOpacity={0.15}
-                strokeWidth={2}
-              />
-              <Tooltip
-                contentStyle={{ background: '#0d1526', border: '1px solid #1e3a5f', borderRadius: 10, fontSize: 11 }}
-                formatter={(v: any) => [`${Number(v).toFixed(1)}`, 'Normalized Value']}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Bar comparison */}
-        <div className="glass-card rounded-[18px] p-4 border border-slate-800/30">
-          <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1">Current vs Ideal Benchmarks</p>
-          <p className="text-xs text-slate-600 mb-3">
-            <span className="text-cyan-400">■ Current</span> vs
-            <span className="text-slate-500"> ■ Ideal</span>
-          </p>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={barData} barCategoryGap="25%" barGap={3}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e3a5f33" />
-              <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 9 }} />
-              <YAxis tick={{ fill: '#64748b', fontSize: 9 }} />
-              <Tooltip
-                contentStyle={{ background: '#0d1526', border: '1px solid #1e3a5f', borderRadius: 10, fontSize: 11 }}
-              />
-              <Bar dataKey="current" name="Current" radius={[4, 4, 0, 0]}>
-                {barData.map((d, i) => <Cell key={i} fill={d.color} fillOpacity={0.85} />)}
-              </Bar>
-              <Bar dataKey="ideal" name="Ideal" radius={[4, 4, 0, 0]} fill="#1e3a5f" fillOpacity={0.6} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
+      
       {/* Satellite additional metrics */}
       <div className="glass-card rounded-[18px] p-4 border border-slate-800/30">
         <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-3">Additional Satellite Parameters</p>
