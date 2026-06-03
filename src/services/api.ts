@@ -1,8 +1,9 @@
 import axios from 'axios';
 import type { PredictionResult, ForecastPoint, SimulationResult, LocationData } from '../store/useStore';
 
-const getBackendUrl = () =>
-  (import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:5000';
+const API_BASE =
+  import.meta.env.VITE_BACKEND_URL ||
+  'https://meow-production-9b74.up.railway.app';
 
 const api = axios.create({
   timeout: 60000,
