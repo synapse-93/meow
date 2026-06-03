@@ -10,150 +10,64 @@ import { LoadingSpinner } from './ui/LoadingSpinner';
 import { ErrorBanner } from './ui/ErrorBanner';
 
 function AQIGauge({ aqi }: { aqi: number }) {
-  const max = 500;
+const safeAqi = Math.max(0, Math.min(500, Math.round(aqi)));
 
-  const safeAqi = Math.max(
-    0,
-    Math.min(Number(aqi) || 0, max)
-  );
+const aqiLabel =
+  safeAqi <= 50
+    ? 'Good'
+    : safeAqi <= 100
+    ? 'Moderate'
+    : safeAqi <= 150
+    ? 'Unhealthy for Sensitive Groups'
+    : safeAqi <= 200
+    ? 'Unhealthy'
+    : safeAqi <= 300
+    ? 'Very Unhealthy'
+    : 'Hazardous';
 
-  const normalizedAqi = safeAqi;
-
-  const angle = -45 + (safeAqi / 500) * 270;
-
-  const color = getAqiColor(normalizedAqi);
-  const glow = getAqiGlow(normalizedAqi);
-
-  const cx = 110;
-  const cy = 115;
-
-  const startAngle = -135;
-  const endAngle = 135;
-
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
-
-  const polarX = (angle: number, radius: number) =>
-    cx + radius * Math.cos(toRad(angle));
-
-  const polarY = (angle: number, radius: number) =>
-    cy + radius * Math.sin(toRad(angle));
-
-  function arcPath(
-    start: number,
-    end: number,
-    innerR: number,
-    outerR: number
-  ) {
-    const s1 = polarX(start, outerR);
-    const s2 = polarY(start, outerR);
-
-    const e1 = polarX(end, outerR);
-    const e2 = polarY(end, outerR);
-
-    const s3 = polarX(end, innerR);
-    const s4 = polarY(end, innerR);
-
-    const e3 = polarX(start, innerR);
-    const e4 = polarY(start, innerR);
-
-    const largeArc = end - start > 180 ? 1 : 0;
-
-    return `
-      M ${s1} ${s2}
-      A ${outerR} ${outerR} 0 ${largeArc} 1 ${e1} ${e2}
-      L ${s3} ${s4}
-      A ${innerR} ${innerR} 0 ${largeArc} 0 ${e3} ${e4}
-      Z
-    `;
-  }
-
-  const fillAngle =
-    startAngle + (normalizedAqi / max) * 270;
+const aqiColor =
+  safeAqi <= 50
+    ? '#22c55e'
+    : safeAqi <= 100
+    ? '#eab308'
+    : safeAqi <= 150
+    ? '#f97316'
+    : safeAqi <= 200
+    ? '#ef4444'
+    : safeAqi <= 300
+    ? '#a855f7'
+    : '#7f1d1d';
 
   return (
-    <div className="relative flex items-center justify-center">
-      <svg width={240} height={180} viewBox="0 0 220 180">
-        <defs>
-          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#22c55e" />
-            <stop offset="25%" stopColor="#eab308" />
-            <stop offset="50%" stopColor="#f97316" />
-            <stop offset="75%" stopColor="#ef4444" />
-            <stop offset="100%" stopColor="#a855f7" />
-          </linearGradient>
+    <div className="relative rounded-3xl border border-slate-800/60 bg-[#07152d] p-6 h-[320px] flex flex-col items-center justify-center overflow-hidden">
+      
+      {/* subtle glow */}
+      <div
+        className="absolute inset-0 opacity-20 blur-3xl"
+        style={{
+          background: `radial-gradient(circle, ${aqiColor} 0%, transparent 70%)`,
+        }}
+      />
 
-          <filter id="glowFilter">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+      {/* title */}
+      <div className="absolute top-5 left-5 text-slate-500 text-sm font-semibold tracking-[0.2em] uppercase">
+        AQI Index
+      </div>
 
-        {/* Background arc */}
-        <path
-          d={arcPath(startAngle, endAngle, 64, 76)}
-          fill="#1e293b"
-          opacity={0.3}
-        />
+      {/* AQI Number */}
+      <div
+        className="text-7xl font-extrabold z-10"
+        style={{ color: aqiColor }}
+      >
+        {safeAqi}
+      </div>
 
-        {/* Filled arc */}
-        {normalizedAqi > 0 && (
-          <path
-            d={arcPath(startAngle, fillAngle, 64, 76)}
-            fill="url(#gaugeGrad)"
-            filter="url(#glowFilter)"
-          />
-        )}
-
-        {/* Needle */}
-        <g transform={`rotate(${angle} ${cx} ${cy})`}>
-        <line
-          x1={cx}
-          y1={cy}
-          x2={cx}
-          y2={cy - 48}
-          stroke={color}
-          strokeWidth={5}
-          strokeLinecap="round"
-        />
-
-          <circle cx={cx} cy={cy} r={8} fill={color} />
-          <circle cx={cx} cy={cy} r={4} fill="#020617" />
-        </g>
-
-        {/* Labels */}
-        <text x={20} y={120} fill="#64748b" fontSize={10}>
-          0
-        </text>
-
-        <text x={104} y={20} fill="#64748b" fontSize={10}>
-          250
-        </text>
-
-        <text x={185} y={120} fill="#64748b" fontSize={10}>
-          500
-        </text>
-      </svg>
-
-      <div className="absolute bottom-4 flex flex-col items-center">
-        <span
-          className="text-4xl font-black"
-          style={{
-            color,
-            textShadow: `0 0 20px ${glow}`,
-          }}
-        >
-          {Math.round(normalizedAqi)}
-        </span>
-
-        <span
-          className="text-xs font-semibold"
-          style={{ color }}
-        >
-          {getAqiLabel(normalizedAqi)}
-        </span>
+      {/* AQI Label */}
+      <div
+        className="text-2xl font-semibold mt-2 z-10"
+        style={{ color: aqiColor }}
+      >
+        {aqiLabel}
       </div>
     </div>
   );
